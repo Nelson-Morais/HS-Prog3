@@ -2,24 +2,34 @@ package de.hsos.nelson.morais.project.prog3.demossamp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
+
+
 import android.graphics.Bitmap;
+
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+
 public class GameActivity extends AppCompatActivity {
 
-    ImageButton soundButton, leftButton;
+    ImageButton soundButton, shareButton;
     MediaPlayer mediaPlayer;
 
     private GameView gameView;
@@ -29,6 +39,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         //setContentView(gameView);
@@ -38,8 +49,6 @@ public class GameActivity extends AppCompatActivity {
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
-
-
 
 
         mediaPlayer = MediaPlayer.create(this, R.raw.tetrix_soundtrack);
@@ -52,6 +61,7 @@ public class GameActivity extends AppCompatActivity {
 
 
         turnSound();
+        shareFunktion();
 
 
         Timer timer = new Timer();
@@ -100,6 +110,49 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void shareFunktion() {
+        shareButton = findViewById(R.id.shareButton);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                screenSnap();
+            }
+        });
+    }
+
+    private void screenSnap() {
+
+        View windowView = getWindow().getDecorView().getRootView();
+        windowView.setDrawingCacheEnabled(true);
+
+        Bitmap bitmap = Bitmap.createBitmap(windowView.getDrawingCache());
+        windowView.setDrawingCacheEnabled(false);
+
+
+
+        String filename = Environment.getExternalStorageDirectory() + "/Download/"
+                + Calendar.getInstance().getTime().toString() + ".jpg";
+
+
+        File file = new File(filename);
+
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100,fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 }

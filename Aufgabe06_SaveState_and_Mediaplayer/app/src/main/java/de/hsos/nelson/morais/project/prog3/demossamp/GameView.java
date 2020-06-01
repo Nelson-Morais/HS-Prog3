@@ -29,7 +29,7 @@ public class GameView extends View {
 
 
 
-    MediaPlayer mediaPlayer;
+
 
 
     public GameView(Context context) {
